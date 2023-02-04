@@ -119,8 +119,6 @@ information_message() {
 }
 
 install_panel() {
-    domain_usage
-    phpmyadmin_usage
     dependency_installation
     installing_composer
     download_files
