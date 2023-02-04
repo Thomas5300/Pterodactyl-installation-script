@@ -1,1 +1,1 @@
-# Pterodactyl-installation-script
+# Pterodactyl Installation Script
