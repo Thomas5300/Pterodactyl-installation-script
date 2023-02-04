@@ -72,14 +72,14 @@ crontab_configuration() {
 }
 
 create_queue_worker() {
-    curl -o /etc/systemd/system/pteroq.service https://config.thomascaptein.nl/pteroq.service
+    curl -o /etc/systemd/system/pteroq.service https://raw.githubusercontent.com/Thomas5300/Pterodactyl-installation-script/main/configurations/pteroq.service
     sudo systemctl enable --now redis-server
     sudo systemctl enable --now pteroq.service
 }
 
 nginx_configuration() {
     rm /etc/nginx/sites-enabled/default
-    curl -o /etc/nginx/sites-available/pterodactyl.conf https://config.thomascaptein.nl/nginx/no_ssl.conf
+    curl -o /etc/nginx/sites-available/pterodactyl.conf https://raw.githubusercontent.com/Thomas5300/Pterodactyl-installation-script/main/configurations/nginx/no_ssl.conf
     sed -i -e "s/<domain>/${FQDN}/g" /etc/nginx/sites-available/pterodactyl.conf
     sudo ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf
     sudo systemctl restart nginx
