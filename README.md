@@ -8,7 +8,7 @@ We have a pterodactyl script that does almost everything for you! For example, w
 - Ability to install phpMyAdmin
 
 # How to use our script
-You can use our script by executing the 2 commands that can be found below when you do this you will get a menu with a number of choices from which to choose
+You can use our script by executing the 2 commands that can be found below when you do this you will get a menu with a number of choices from which you can choose if it is not listed what you need you can use any script also manually download and run manually if you need help with this please contact us
 ```bash
 wget https://scripts.thomascaptein.nl/install.sh
 bash install.sh
