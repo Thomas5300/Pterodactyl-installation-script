@@ -4,6 +4,7 @@ FQDN=$(curl -s https://ip.thomascaptein.nl)
 USE_SSL=false
 USE_DOMAIN=false
 MYSQL_PASSWORD=$(tr -dc A-Za-z0-9_ < /dev/urandom | head -c 16)
+USER_PASSWORD=$(tr -dc A-Za-z0-9_ < /dev/urandom | head -c 16)
 memory=$(grep MemTotal /proc/meminfo | awk '{print $2}')
 disk_space=$(df -B MB / | tail -n 1 | awk '{print $2}')
 
@@ -150,7 +151,7 @@ crontab_configuration() {
 }
 
 create_queue_worker() {
-    curl -o /etc/systemd/system/pteroq.service https://config.thomascaptein.nl/pteroq.service
+    curl -o /etc/systemd/system/pteroq.service https://raw.githubusercontent.com/Thomas5300/Pterodactyl-installation-script/main/configurations/pteroq.service
     sudo systemctl enable --now redis-server
     sudo systemctl enable --now pteroq.service
 }
@@ -183,13 +184,13 @@ nginx_configuration() {
     rm /etc/nginx/sites-enabled/default
     if [ "$USE_SSL" == true ]; then
         nginx_certbot
-        curl -o /etc/nginx/sites-available/pterodactyl.conf https://config.thomascaptein.nl/nginx/ssl.conf
+        curl -o /etc/nginx/sites-available/pterodactyl.conf https://raw.githubusercontent.com/Thomas5300/Pterodactyl-installation-script/main/configurations/nginx/ssl.conf
         sed -i -e "s/<domain>/${FQDN}/g" /etc/nginx/sites-available/pterodactyl.conf
         sudo ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf
         sudo systemctl restart nginx
         crontab -l > mycron && echo "0 23 * * * certbot renew --quiet --deploy-hook \"systemctl restart nginx\"" >> mycron && crontab mycron && rm mycron
     elif [ "$USE_SSL" == false ]; then
-        curl -o /etc/nginx/sites-available/pterodactyl.conf https://config.thomascaptein.nl/nginx/no_ssl.conf
+        curl -o /etc/nginx/sites-available/pterodactyl.conf https://raw.githubusercontent.com/Thomas5300/Pterodactyl-installation-script/main/configurations/nginx/no_ssl.conf
         sed -i -e "s/<domain>/${FQDN}/g" /etc/nginx/sites-available/pterodactyl.conf
         sudo ln -s /etc/nginx/sites-available/pterodactyl.conf /etc/nginx/sites-enabled/pterodactyl.conf
         sudo systemctl restart nginx
@@ -207,7 +208,7 @@ apache2_configuration() {
     a2dissite 000-default.conf
     if [ "$USE_SSL" == true ]; then
         apache2_certbot
-        curl -o /etc/apache2/sites-available/pterodactyl.conf https://config.thomascaptein.nl/apache2/ssl.conf
+        curl -o /etc/apache2/sites-available/pterodactyl.conf https://raw.githubusercontent.com/Thomas5300/Pterodactyl-installation-script/main/configurations/apache/ssl.conf
         sed -i -e "s/<domain>/${FQDN}/g" /etc/apache2/sites-available/pterodactyl.conf
         sudo ln -s /etc/apache2/sites-available/pterodactyl.conf /etc/apache2/sites-enabled/pterodactyl.conf
         sudo a2enmod rewrite
@@ -215,7 +216,7 @@ apache2_configuration() {
         sudo systemctl restart apache2
         crontab -l > mycron && echo "0 23 * * * certbot renew --quiet --deploy-hook \"systemctl restart apache2\"" >> mycron && crontab mycron && rm mycron
     elif [ "$USE_SSL" == false ]; then
-        curl -o /etc/apache2/sites-available/pterodactyl.conf https://config.thomascaptein.nl/apache2/no_ssl.conf
+        curl -o /etc/apache2/sites-available/pterodactyl.conf https://raw.githubusercontent.com/Thomas5300/Pterodactyl-installation-script/main/configurations/apache/no_ssl.conf
         sed -i -e "s/<domain>/${FQDN}/g" /etc/apache2/sites-available/pterodactyl.conf
         sudo ln -s /etc/apache2/sites-available/pterodactyl.conf /etc/apache2/sites-enabled/pterodactyl.conf
         sudo a2enmod rewrite
@@ -248,7 +249,7 @@ installing_wings() {
 }
 
 daemonizing() {
-    curl -o /etc/systemd/system/wings.service https://config.thomascaptein.nl/wings.service
+    curl -o /etc/systemd/system/wings.service https://raw.githubusercontent.com/Thomas5300/Pterodactyl-installation-script/main/configurations/wings.service
     systemctl enable --now wings
 }
 
@@ -269,7 +270,7 @@ information_message() {
     echo ""
     echo "Here are your login credentials:"
     echo "Username: admin"
-    echo "Password: $PASSWORD"
+    echo "Password: $USER_PASSWORD"
     if [ "$USE_SSL" == true ]; then
         echo "URL: https://$FQDN"
         echo "phpMyAdmin URL: https://$FQDN/phpmyadmin"
@@ -286,12 +287,13 @@ information_message() {
     echo "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
     echo "If you need any help, please join our Discord server: https://discord.gg/"
     echo "Thank you for using this script."
-    echo "Script created by Thomas Captein"
+    echo "Script created by https://github.com/Thomas5300"
     echo "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 }
 
 install_pterodactyl() {
     domain_usage
+    email_usage
     phpmyadmin_usage
     dependency_installation
     installing_composer
