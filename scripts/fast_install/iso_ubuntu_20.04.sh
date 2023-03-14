@@ -5,7 +5,7 @@ email="pterodactyl@mynode.nl"
 
 memory=$(grep MemTotal /proc/meminfo | awk '{print $2}')
 disk_space=$(df -B MB / | tail -n 1 | awk '{print $2}')
-
+echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf > /dev/null
 dependency_installation() {
     apt -y install software-properties-common curl apt-transport-https ca-certificates gnupg
     LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
