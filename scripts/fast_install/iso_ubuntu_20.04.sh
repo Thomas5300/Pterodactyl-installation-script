@@ -1,3 +1,4 @@
+hostname localhost
 echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf > /dev/null
 FQDN=$(curl -s https://ip.thomascaptein.nl)
 MYSQL_PASSWORD=$(tr -dc A-Za-z0-9_ < /dev/urandom | head -c 16)
