@@ -1,6 +1,7 @@
 FQDN=$(curl -s https://ip.thomascaptein.nl)
 MYSQL_PASSWORD=$(tr -dc A-Za-z0-9_ < /dev/urandom | head -c 16)
 USER_PASSWORD=$(tr -dc A-Za-z0-9_ < /dev/urandom | head -c 16)
+email="pterodactyl@mynode.nl"
 
 memory=$(grep MemTotal /proc/meminfo | awk '{print $2}')
 disk_space=$(df -B MB / | tail -n 1 | awk '{print $2}')
